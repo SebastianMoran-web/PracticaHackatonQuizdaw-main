@@ -173,6 +173,8 @@ function iniciar() {
   document.getElementById("btnSiguiente").addEventListener("click", siguiente);
   document.getElementById("opciones").addEventListener("click", manejarOpcion);
   document.getElementById("btnTema").addEventListener("click", cambiarTema);
+  document.getElementById("btnFavorita").addEventListener("click", guardarFavorita); 
+  pintarFavoritas();
   
   // ERROR8 : Al poner 'abrirResultados()' con paréntesis, se ejecutaba inmediatamente al cargar la página
   document.getElementById("btnResultados").addEventListener("click", abrirResultados);
@@ -180,3 +182,44 @@ function iniciar() {
   document.getElementById("btnBorrar").addEventListener("click", manejarBorrar);
 }
 document.addEventListener("DOMContentLoaded", iniciar);
+
+function guardarFavorita() {
+  const partidas = cargarPartidas();
+  if (partidas.length === 0) {
+    alert("Tienes que jugar una partida primero para poder destacarla.");
+    return;
+  }
+
+  const ultima = partidas[0];
+  const favoritas = leerCookie("favoritas", []);
+
+  favoritas.push({ 
+    jugador: ultima.nombre, 
+    puntos: ultima.puntos, 
+    total: ultima.total 
+  });
+
+  guardarCookie("favoritas", favoritas, 30);
+  pintarFavoritas();
+}
+
+function pintarFavoritas() {
+  const favoritas = leerCookie("favoritas", []);
+  if (favoritas.length === 0) return;
+
+  let contenedor = document.getElementById("zonaFavoritas");
+  if (!contenedor) {
+    contenedor = document.createElement("div");
+    contenedor.id = "zonaFavoritas";
+    contenedor.className = "card";
+    document.querySelector("footer").before(contenedor);
+  }
+
+  let html = "<h2>Partidas Destacadas</h2><ul>";
+  for (const fav of favoritas) {
+    html += "<li>" + fav.jugador + " logró " + fav.puntos + " de " + fav.total + " puntos.</li>";
+  }
+  html += "</ul>";
+  
+  contenedor.innerHTML = html;
+}
