@@ -156,6 +156,15 @@ function abrirResultados() {
   window.open("resultados.html", "resultados", "popup=yes,width=520,height=460");
 }
 
+function manejarBorrar() {
+  if (confirm("¿Borrar todos tus datos del quiz?")) {
+    borrarCookie("usuario");
+    borrarCookie("partidas");
+    pintarPartidas();
+    document.getElementById("saludo").textContent = "Datos borrados. Recarga la página.";
+  }
+}
+
 /* ---------- Arranque ---------- */
 function iniciar() {
   usuario = leerCookie("usuario", null);
@@ -179,7 +188,7 @@ function iniciar() {
   // ERROR8 : Al poner 'abrirResultados()' con paréntesis, se ejecutaba inmediatamente al cargar la página
   document.getElementById("btnResultados").addEventListener("click", abrirResultados);
   
-  document.getElementById("btnBorrar").addEventListener("click", manejarBorrar);
+  document.getElementById("btnBorrar").addEventListener("click", (manejarBorrar));
 }
 document.addEventListener("DOMContentLoaded", iniciar);
 
